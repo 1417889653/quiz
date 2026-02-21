@@ -1082,12 +1082,13 @@ function shareResult(){
   doShare('外科药学习题大全 - 我得了'+sc+'分',text);
 }
 function doShare(title,text){
+  var shareUrl='https://1417889653.github.io/quiz/';
   if(navigator.share){
-    navigator.share({title:title,text:text,url:location.href}).catch(function(){});
+    navigator.share({title:title,text:text,url:shareUrl}).catch(function(){});
   }else if(/micromessenger/i.test(navigator.userAgent)){
     alert('点击右上角"..."按钮，选择"发送给朋友"即可分享');
   }else{
-    var ta=document.createElement('textarea');ta.value=text+'\n'+location.href;ta.style.position='fixed';ta.style.opacity='0';
+    var ta=document.createElement('textarea');ta.value=text+'\n'+shareUrl;ta.style.position='fixed';ta.style.opacity='0';
     document.body.appendChild(ta);ta.select();
     try{document.execCommand('copy');alert('分享文案已复制到剪贴板，粘贴发送给好友即可')}
     catch(e){alert('请手动复制链接分享给好友')}
