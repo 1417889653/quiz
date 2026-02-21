@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="x5-orientation" content="portrait">
+<meta name="screen-orientation" content="portrait">
+<meta property="og:title" content="外科药学习题大全">
+<meta property="og:description" content="基于外科药学教材全书知识，每组15题，单选+多选，附带解析，快来测试一下吧！">
+<meta property="og:type" content="website">
+<title>外科药学习题大全</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:#f0f2f5;color:#333;min-height:100vh}
+.container{max-width:640px;margin:0 auto;padding:16px}
+#startPage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:40px 20px}
+#startPage h1{font-size:28px;color:#1a73e8;margin-bottom:12px}
+#startPage .subtitle{font-size:15px;color:#666;margin-bottom:8px}
+#startPage .desc{font-size:13px;color:#999;margin-bottom:32px;line-height:1.8}
+.btn-primary{background:linear-gradient(135deg,#1a73e8,#4a90d9);color:#fff;border:none;padding:14px 48px;border-radius:25px;font-size:18px;cursor:pointer;transition:all .3s;box-shadow:0 4px 15px rgba(26,115,232,.3)}
+.btn-primary:active{transform:scale(.96)}
+.btn-secondary{background:#fff;color:#1a73e8;border:2px solid #1a73e8;padding:12px 36px;border-radius:25px;font-size:16px;cursor:pointer;transition:all .3s;margin-top:16px}
+#userModal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center}
+#userModal.show{display:flex}
+.modal-box{background:#fff;border-radius:16px;padding:32px 24px;width:320px;text-align:center}
+.modal-box h3{margin-bottom:16px;font-size:18px}
+.modal-box input{width:100%;padding:12px 16px;border:2px solid #e0e0e0;border-radius:10px;font-size:16px;outline:none}
+.modal-box input:focus{border-color:#1a73e8}
+.modal-box .btn-primary{margin-top:16px;padding:12px 36px;font-size:16px}
+#quizPage{display:none}
+.progress-bar{background:#e0e0e0;border-radius:10px;height:6px;margin-bottom:16px;overflow:hidden}
+.progress-fill{background:linear-gradient(90deg,#1a73e8,#34a853);height:100%;border-radius:10px;transition:width .4s}
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:14px;color:#666}
+.quiz-header .round-info{font-weight:600;color:#1a73e8}
+.question-card{background:#fff;border-radius:16px;padding:24px 20px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:16px}
+.q-badge{display:inline-block;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;margin-bottom:12px}
+.q-badge.single{background:#e8f0fe;color:#1a73e8}
+.q-badge.multi{background:#fce8e6;color:#d93025}
+.q-chapter{font-size:12px;color:#999;margin-bottom:8px}
+.q-text{font-size:16px;line-height:1.6;margin-bottom:20px;font-weight:500}
+.options{list-style:none}
+.option-item{padding:14px 16px;border:2px solid #e8e8e8;border-radius:12px;margin-bottom:10px;cursor:pointer;transition:all .25s;font-size:15px;line-height:1.5;display:flex;align-items:flex-start;gap:10px}
+.option-item:hover:not(.disabled){border-color:#1a73e8;background:#f8fbff}
+.option-item.selected{border-color:#1a73e8;background:#e8f0fe}
+.option-item.correct{border-color:#34a853!important;background:#e6f4ea!important;color:#137333}
+.option-item.wrong{border-color:#d93025!important;background:#fce8e6!important;color:#a50e0e}
+.option-item.missed{border-color:#f9ab00!important;background:#fef7e0!important;color:#b06000}
+.option-item.disabled{cursor:default;opacity:.95}
+.option-letter{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#666}
+.option-item.selected .option-letter{background:#1a73e8;color:#fff}
+.option-item.correct .option-letter{background:#34a853;color:#fff}
+.option-item.wrong .option-letter{background:#d93025;color:#fff}
+.option-item.missed .option-letter{background:#f9ab00;color:#fff}
+.color-legend{font-size:12px;color:#999;margin-top:12px;line-height:1.8;display:none;padding:10px 14px;background:#fafafa;border-radius:8px}
+.color-legend .cg{color:#34a853;font-weight:600}
+.color-legend .cr{color:#d93025;font-weight:600}
+.color-legend .cy{color:#f9ab00;font-weight:600}
+.explanation{display:none;margin-top:14px;padding:14px 16px;background:#f0f7ff;border-left:4px solid #1a73e8;border-radius:0 10px 10px 0;font-size:14px;line-height:1.7;color:#444}
+.explanation .exp-title{font-weight:700;color:#1a73e8;margin-bottom:6px;font-size:13px}
+.btn-next{display:none;width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#1a73e8,#4a90d9);color:#fff;box-shadow:0 4px 12px rgba(26,115,232,.3)}
+.btn-confirm-multi{display:none;width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;margin-bottom:10px;background:#34a853;color:#fff}
+#resultPage{display:none;text-align:center;padding-top:40px}
+.result-card{background:#fff;border-radius:20px;padding:32px 24px;box-shadow:0 4px 20px rgba(0,0,0,.08);margin-bottom:20px}
+.score-circle{width:140px;height:140px;border-radius:50%;margin:0 auto 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:42px;font-weight:700;color:#fff}
+.score-circle.high{background:linear-gradient(135deg,#34a853,#0d652d)}
+.score-circle.mid{background:linear-gradient(135deg,#f9ab00,#e37400)}
+.score-circle.low{background:linear-gradient(135deg,#d93025,#a50e0e)}
+.score-circle small{font-size:14px;font-weight:400;opacity:.9}
+.result-stats{display:flex;justify-content:center;gap:32px;margin:20px 0;font-size:14px;color:#666}
+.result-stats div{text-align:center}
+.result-stats .num{font-size:24px;font-weight:700;color:#333;display:block}
+.result-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+#rankPage{display:none}
+.rank-header{text-align:center;padding:24px 0 16px}
+.rank-header h2{font-size:22px;color:#333}
+.rank-list{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.rank-item{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid #f0f0f0;font-size:15px}
+.rank-item:last-child{border:none}
+.rank-pos{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-right:14px;flex-shrink:0}
+.rank-pos.top1{background:#ffd700;color:#7a5c00}
+.rank-pos.top2{background:#c0c0c0;color:#555}
+.rank-pos.top3{background:#cd7f32;color:#fff}
+.rank-pos.normal{background:#f0f0f0;color:#666}
+.rank-name{flex:1;font-weight:500}
+.rank-detail{text-align:right;font-size:13px;color:#666}
+.rank-detail .rank-score{font-size:18px;font-weight:700;color:#1a73e8;display:block}
+.rank-back{text-align:center;padding:24px}
+.history-section{margin-top:16px}
+.history-section h3{font-size:16px;margin-bottom:12px;color:#333;padding:0 4px}
+.history-item{background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.history-item .hi-round{font-size:14px;color:#666}
+.history-item .hi-score{font-size:16px;font-weight:700}
+.history-item .hi-time{font-size:12px;color:#999}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .4s ease}
+body{padding-bottom:env(safe-area-inset-bottom);padding-top:env(safe-area-inset-top)}
+.container{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+.option-item{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn-primary,.btn-secondary,.btn-next,.btn-confirm-multi{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn-share{background:#07c160;color:#fff;border:none;padding:12px 36px;border-radius:25px;font-size:16px;cursor:pointer;margin-top:16px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+</style>
+</head>
+<body>
+
+<div id="startPage" class="container">
+  <h1>外科药学习题大全</h1>
+  <div class="subtitle">基于外科药学教材全书知识</div>
+  <div class="desc">每组15题 · 单选+多选各半 · 覆盖全书不同章节<br>答完即出成绩 · 附带解析 · 可反复练习不重复</div>
+  <button class="btn-primary" onclick="startQuiz()">开始答题</button>
+  <button class="btn-secondary" onclick="showRank()">查看答题排行</button>
+  <button class="btn-share" onclick="shareQuiz()">分享给好友</button>
+</div>
+
+<div id="userModal">
+  <div class="modal-box fade-in">
+    <h3>请输入你的昵称</h3>
+    <input type="text" id="usernameInput" placeholder="微信昵称或姓名" maxlength="20">
+    <br><button class="btn-primary" onclick="confirmUser()">确认</button>
+  </div>
+</div>
+
+<div id="quizPage" class="container">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="quiz-header">
+    <span id="qIndex">1 / 15</span>
+    <span class="round-info" id="roundInfo">第1组</span>
+  </div>
+  <div class="question-card fade-in" id="questionCard">
+    <div id="qBadge" class="q-badge single">单选题</div>
+    <div id="qChapter" class="q-chapter"></div>
+    <div id="qText" class="q-text"></div>
+    <button class="btn-confirm-multi" id="btnConfirm" onclick="confirmMulti()">确认提交</button>
+    <ul class="options" id="optionsList"></ul>
+    <div class="color-legend" id="colorLegend">
+      <span class="cg">■ 绿色</span>=正确 &nbsp;<span class="cr">■ 红色</span>=错选 &nbsp;<span class="cy">■ 黄色</span>=漏选
+    </div>
+    <div class="explanation" id="explanation">
+      <div class="exp-title">解析</div>
+      <div id="expContent"></div>
+      <div id="expSrc" style="font-size:12px;color:#999;margin-top:6px"></div>
+    </div>
+  </div>
+  <button class="btn-next" id="btnNext" onclick="nextQuestion()">下一题 →</button>
+</div>
+
+<div id="resultPage" class="container">
+  <div class="result-card fade-in">
+    <div class="score-circle" id="scoreCircle"><span id="scoreNum">0</span><small>分</small></div>
+    <div class="result-stats">
+      <div><span class="num" id="statCorrect">0</span>答对</div>
+      <div><span class="num" id="statWrong">0</span>答错</div>
+      <div><span class="num" id="statTotal">15</span>总题数</div>
+    </div>
+  </div>
+  <div class="result-btns">
+    <button class="btn-primary" onclick="nextRound()">继续下一组</button>
+    <button class="btn-secondary" onclick="showRank()">查看排行</button>
+    <button class="btn-share" onclick="shareResult()">分享成绩</button>
+  </div>
+  <div class="history-section" id="historySection"></div>
+</div>
+
+<div id="rankPage" class="container">
+  <div class="rank-header"><h2>答题排行榜</h2></div>
+  <div class="rank-list" id="rankList"></div>
+  <div class="rank-back"><button class="btn-secondary" onclick="backToStart()">返回首页</button></div>
+</div>
+
+<script>
+// 外科药学题库 - 含解析和章节来源
+QB=[
+// ===== 围手术期用药 =====
+{ch:"围手术期用药",type:"single",q:"围手术期预防性使用抗菌药物的最佳给药时间是？",
+ opts:["术前2小时","术前30分钟至1小时内","术后即刻","术后6小时内"],ans:[1],
+ exp:"预防性抗菌药物应在切皮前30分钟至1小时内静脉给药，以保证在切口暴露时局部组织中药物浓度达到有效水平。",
+ src:"——围手术期抗菌药物预防应用章节"},
+
+{ch:"围手术期用药",type:"single",q:"清洁手术预防感染首选的抗菌药物是？",
+ opts:["头孢唑林","头孢曲松","左氧氟沙星","甲硝唑"],ans:[0],
+ exp:"头孢唑林为第一代头孢菌素，对革兰阳性球菌（尤其是葡萄球菌）有良好活性，是清洁手术预防SSI的首选药物。",
+ src:"——围手术期预防用药选择章节"},
+
+{ch:"围手术期用药",type:"single",q:"清洁-污染手术预防用抗菌药物一般不超过多长时间？",
+ opts:["12小时","24小时","48小时","72小时"],ans:[1],
+ exp:"清洁-污染手术预防用药总时间一般不超过24小时，过长使用会增加耐药菌产生和不良反应风险。",
+ src:"——围手术期预防用药疗程章节"},
+
+{ch:"围手术期用药",type:"multi",q:"以下哪些属于围手术期需要停用或调整的药物？",
+ opts:["华法林","阿司匹林","氯吡格雷","二甲双胍","辛伐他汀","左甲状腺素"],ans:[0,1,2,3],
+ exp:"华法林、阿司匹林、氯吡格雷均影响凝血/血小板功能，术前需停用以降低出血风险；二甲双胍在术前需停用以防乳酸酸中毒。辛伐他汀和左甲状腺素通常可继续使用。",
+ src:"——围手术期药物调整章节"},
+
+{ch:"围手术期用药",type:"single",q:"术前需停用华法林，一般应在术前几天停药？",
+ opts:["1天","3天","5天","7天"],ans:[2],
+ exp:"华法林半衰期约36-42小时，需术前5天停药使INR恢复至正常范围，必要时可用低分子肝素桥接抗凝。",
+ src:"——围手术期抗凝药物管理章节"},
+
+{ch:"围手术期用药",type:"multi",q:"围手术期预防用抗菌药物的原则包括哪些？",
+ opts:["选择广谱抗菌药物","针对可能的污染菌","在切皮前给药","所有手术都需要预防用药","疗程尽量短","选择价格最贵的药物"],ans:[1,2,4],
+ exp:"预防用药应针对手术可能的污染菌而非盲目使用广谱抗菌药，应在切皮前给药保证组织浓度，疗程尽量短（通常≤24h）。并非所有手术都需预防用药，药物选择与价格无关。",
+ src:"——围手术期抗菌药物预防应用原则章节"},
+
+{ch:"围手术期用药",type:"single",q:"对β-内酰胺类过敏的患者，清洁手术预防感染可选用？",
+ opts:["阿莫西林","克林霉素","头孢呋辛","氨苄西林"],ans:[1],
+ exp:"β-内酰胺类过敏患者不能使用头孢菌素和青霉素类，可选用克林霉素或万古霉素作为替代方案。",
+ src:"——特殊人群围手术期预防用药章节"},
+
+{ch:"围手术期用药",type:"single",q:"术中如手术时间超过3小时或出血量大于1500ml，预防用抗菌药物应如何处理？",
+ opts:["无需追加","术中追加一剂","术后连用3天","更换更强效抗菌药物"],ans:[1],
+ exp:"手术时间超过所用药物的两个半衰期或出血量>1500ml时，应术中追加一剂以维持有效的组织药物浓度。",
+ src:"——围手术期预防用药追加给药章节"},
+
+{ch:"围手术期用药",type:"single",q:"糖尿病患者术前使用二甲双胍应在术前多久停用？",
+ opts:["术前1天","术前24-48小时","术前1周","术前1小时"],ans:[1],
+ exp:"二甲双胍在围手术期可能因组织缺氧、肾功能变化等导致乳酸酸中毒，应在术前24-48小时停用，术后肾功能恢复正常后再恢复使用。",
+ src:"——围手术期特殊药物管理章节"},
+
+// ===== 外科感染与抗菌药物 =====
+{ch:"外科感染与抗菌药物",type:"single",q:"外科手术部位感染最常见的致病菌是？",
+ opts:["铜绿假单胞菌","金黄色葡萄球菌","大肠埃希菌","肺炎克雷伯菌"],ans:[1],
+ exp:"金黄色葡萄球菌是外科手术部位感染（SSI）最常见的致病菌，尤其在清洁手术中，其次为凝固酶阴性葡萄球菌。",
+ src:"——外科感染病原学章节"},
+
+{ch:"外科感染与抗菌药物",type:"single",q:"MRSA感染首选的抗菌药物是？",
+ opts:["头孢唑林","万古霉素","青霉素","左氧氟沙星"],ans:[1],
+ exp:"MRSA对所有β-内酰胺类耐药，万古霉素是治疗MRSA感染的首选药物，可根据情况选择利奈唑胺或达托霉素作为替代。",
+ src:"——耐药菌感染治疗章节"},
+
+{ch:"外科感染与抗菌药物",type:"multi",q:"以下哪些抗菌药物对铜绿假单胞菌有效？",
+ opts:["哌拉西林他唑巴坦","头孢他啶","美罗培南","头孢唑林","阿米卡星","阿莫西林"],ans:[0,1,2,4],
+ exp:"铜绿假单胞菌天然耐药谱广，哌拉西林他唑巴坦、头孢他啶（抗假单胞菌头孢）、美罗培南（碳青霉烯类）、阿米卡星（氨基糖苷类）均对其有效。头孢唑林和阿莫西林对铜绿假单胞菌无活性。",
+ src:"——抗铜绿假单胞菌药物治疗章节"},
+
+{ch:"外科感染与抗菌药物",type:"single",q:"腹腔感染经验性抗感染治疗需要覆盖的主要病原体不包括？",
+ opts:["肠杆菌科细菌","厌氧菌","结核分枝杆菌","肠球菌"],ans:[2],
+ exp:"腹腔感染主要由肠杆菌科细菌（大肠埃希菌等）、厌氧菌（脆弱拟杆菌等）和肠球菌引起，结核分枝杆菌不属于腹腔感染的常见病原体。",
+ src:"——腹腔感染抗菌治疗章节"},
+
+{ch:"外科感染与抗菌药物",type:"multi",q:"以下关于万古霉素使用的注意事项正确的是？",
+ opts:["需监测血药浓度","快速静脉推注可致红人综合征","肾功能不全时需调整剂量","可口服治疗艰难梭菌感染","不需要做皮试","与氨基糖苷类合用可增加肾毒性"],ans:[0,1,2,3,5],
+ exp:"万古霉素需进行TDM（谷浓度10-20μg/ml），快速输注可致组胺释放导致红人综合征，肾功能不全需减量，口服可用于艰难梭菌感染（不吸收直接作用于肠道），与氨基糖苷类合用增加肾毒性。万古霉素使用前不需要做皮试。",
+ src:"——万古霉素临床应用章节"},
+
+{ch:"外科感染与抗菌药物",type:"single",q:"产超广谱β-内酰胺酶(ESBL)菌株感染的首选药物是？",
+ opts:["第三代头孢菌素","碳青霉烯类","第一代头孢菌素","大环内酯类"],ans:[1],
+ exp:"ESBL可水解第一至三代头孢菌素，碳青霉烯类（如美罗培南、亚胺培南）对ESBL稳定，是治疗ESBL产生菌严重感染的首选。",
+ src:"——产ESBL菌感染治疗章节"},
+
+{ch:"外科感染与抗菌药物",type:"single",q:"外科常见的厌氧菌感染首选的抗菌药物是？",
+ opts:["庆大霉素","甲硝唑","阿奇霉素","环丙沙星"],ans:[1],
+ exp:"甲硝唑对大多数厌氧菌（包括脆弱拟杆菌）有强效杀菌活性，是外科厌氧菌感染的首选药物，也常用于腹腔和盆腔感染的联合治疗。",
+ src:"——厌氧菌感染治疗章节"},
+
+{ch:"外科感染与抗菌药物",type:"multi",q:"碳青霉烯类抗菌药物包括以下哪些？",
+ opts:["美罗培南","亚胺培南","厄他培南","头孢哌酮","哌拉西林","比阿培南"],ans:[0,1,2,5],
+ exp:"碳青霉烯类包括美罗培南、亚胺培南（需配伍西司他丁）、厄他培南和比阿培南。头孢哌酮是头孢菌素类，哌拉西林是青霉素类。",
+ src:"——碳青霉烯类抗菌药物分类章节"},
+
+{ch:"外科感染与抗菌药物",type:"single",q:"头孢菌素严重过敏反应的处理首选药物是？",
+ opts:["地塞米松","肾上腺素","异丙嗪","氨茶碱"],ans:[1],
+ exp:"严重过敏反应（过敏性休克）的首选抢救药物是肾上腺素（1:1000肌注），可迅速缓解支气管痉挛和低血压。糖皮质激素和抗组胺药为辅助用药。",
+ src:"——药物过敏反应处理章节"},
+
+// ===== 外科疼痛管理 =====
+{ch:"外科疼痛管理",type:"single",q:"WHO三阶梯镇痛方案中，中度疼痛推荐使用的药物类别是？",
+ opts:["非甾体抗炎药","弱阿片类药物","强阿片类药物","局部麻醉药"],ans:[1],
+ exp:"WHO三阶梯方案：轻度疼痛用非阿片类（NSAIDs等），中度疼痛用弱阿片类（曲马多、可待因等），重度疼痛用强阿片类（吗啡、芬太尼等）。",
+ src:"——疼痛治疗三阶梯方案章节"},
+
+{ch:"外科疼痛管理",type:"single",q:"术后多模式镇痛的核心理念是？",
+ opts:["只用一种最强效的镇痛药","联合不同机制的镇痛药物减少单药剂量和不良反应","先用阿片类再逐渐减量","只在患者诉痛时给药"],ans:[1],
+ exp:"多模式镇痛是联合使用作用机制不同的镇痛药物和方法，以产生协同镇痛效果，减少单一药物用量，从而降低不良反应发生率。",
+ src:"——多模式镇痛策略章节"},
+
+{ch:"外科疼痛管理",type:"multi",q:"以下哪些属于非甾体抗炎药(NSAIDs)？",
+ opts:["布洛芬","双氯芬酸","塞来昔布","曲马多","对乙酰氨基酚","氟比洛芬酯"],ans:[0,1,2,5],
+ exp:"布洛芬、双氯芬酸、塞来昔布（选择性COX-2抑制剂）、氟比洛芬酯均为NSAIDs。曲马多是弱阿片类药物，对乙酰氨基酚虽有解热镇痛作用但不属于NSAIDs（无抗炎作用）。",
+ src:"——非甾体抗炎药分类章节"},
+
+{ch:"外科疼痛管理",type:"single",q:"吗啡最常见的不良反应是？",
+ opts:["肝损害","便秘","肾损害","心律失常"],ans:[1],
+ exp:"便秘是阿片类药物最常见且不产生耐受的不良反应，因阿片受体广泛分布于胃肠道，抑制肠蠕动。使用阿片类药物应常规预防便秘。",
+ src:"——阿片类药物不良反应章节"},
+
+{ch:"外科疼痛管理",type:"single",q:"患者自控镇痛(PCA)中，锁定时间的主要目的是？",
+ opts:["节约药物","防止药物过量","减轻护理工作量","降低治疗费用"],ans:[1],
+ exp:"PCA的锁定时间是两次有效给药之间的最短间隔，目的是防止患者在前一次给药尚未发挥最大效果时反复按压导致药物蓄积和过量。",
+ src:"——患者自控镇痛技术章节"},
+
+{ch:"外科疼痛管理",type:"multi",q:"阿片类药物的常见不良反应包括？",
+ opts:["恶心呕吐","便秘","呼吸抑制","尿潴留","血小板减少","瞳孔缩小"],ans:[0,1,2,3,5],
+ exp:"阿片类药物常见不良反应包括恶心呕吐、便秘、呼吸抑制、尿潴留、瞳孔缩小（缩瞳）、嗜睡和皮肤瘙痒等。血小板减少不是阿片类的不良反应。",
+ src:"——阿片类药物药理学章节"},
+
+{ch:"外科疼痛管理",type:"single",q:"NSAIDs禁用于以下哪类患者？",
+ opts:["高血压患者","活动性消化性溃疡患者","糖尿病患者","贫血患者"],ans:[1],
+ exp:"NSAIDs抑制COX-1导致胃黏膜保护性前列腺素减少，可加重溃疡出血，活动性消化性溃疡是NSAIDs的绝对禁忌证。",
+ src:"——NSAIDs用药禁忌章节"},
+
+{ch:"外科疼痛管理",type:"single",q:"纳洛酮用于拮抗阿片类药物过量的给药途径首选？",
+ opts:["口服","静脉注射","肌内注射","皮下注射"],ans:[1],
+ exp:"纳洛酮是阿片受体竞争性拮抗剂，静脉注射起效最快（1-2分钟），是阿片类过量导致呼吸抑制的首选给药途径。需注意纳洛酮半衰期短于多数阿片类药物，可能需要重复给药。",
+ src:"——阿片类药物中毒救治章节"},
+
+{ch:"外科疼痛管理",type:"single",q:"对乙酰氨基酚的每日最大安全剂量为？",
+ opts:["1g","2g","3g","4g"],ans:[1],
+ exp:"对乙酰氨基酚成人每日最大剂量为2g（中国药典标准），超量可导致严重肝损害甚至肝衰竭。部分国际指南为3-4g/天，但肝功能受损者应更低。",
+ src:"——非阿片类镇痛药物章节"},
+
+// ===== 液体治疗与电解质 =====
+{ch:"液体治疗与电解质",type:"single",q:"成人每日基础水需要量约为？",
+ opts:["500-1000ml","1500-2500ml","3000-4000ml","4000-5000ml"],ans:[1],
+ exp:"成人每日基础水需要量约为30-40ml/kg，一般成人约1500-2500ml/天，包括饮水、食物中水分和代谢产水。",
+ src:"——液体治疗基础需要量章节"},
+
+{ch:"液体治疗与电解质",type:"single",q:"0.9%氯化钠注射液属于哪类液体？",
+ opts:["低渗液","等渗液","高渗液","胶体液"],ans:[1],
+ exp:"0.9%氯化钠（生理盐水）渗透压约308mOsm/L，接近血浆渗透压（275-295mOsm/L），属于等渗晶体液。",
+ src:"——常用输液制剂分类章节"},
+
+{ch:"液体治疗与电解质",type:"multi",q:"以下哪些属于晶体液？",
+ opts:["0.9%氯化钠","乳酸钠林格液","5%葡萄糖","白蛋白","羟乙基淀粉","右旋糖酐"],ans:[0,1,2],
+ exp:"晶体液是指含有电解质或小分子溶质的液体，包括生理盐水、林格液、葡萄糖液等。白蛋白、羟乙基淀粉和右旋糖酐属于胶体液，含有大分子物质。",
+ src:"——晶体液与胶体液章节"},
+
+{ch:"液体治疗与电解质",type:"single",q:"低钾血症的补钾原则中，静脉补钾浓度一般不超过？",
+ opts:["0.1%","0.2%","0.3%","0.5%"],ans:[2],
+ exp:"静脉补钾浓度一般不超过0.3%（即每升液体中不超过3g氯化钾），速度不超过40mmol/h，避免高浓度高速度输注导致心脏骤停。",
+ src:"——低钾血症治疗章节"},
+
+{ch:"液体治疗与电解质",type:"multi",q:"高钾血症的紧急处理措施包括？",
+ opts:["静注葡萄糖酸钙","静滴碳酸氢钠","胰岛素+葡萄糖","口服补钾","呋塞米利尿","口服聚苯乙烯磺酸钠"],ans:[0,1,2,4,5],
+ exp:"高钾血症紧急处理：①葡萄糖酸钙稳定心肌（最紧急）；②碳酸氢钠碱化促进K+向细胞内转移；③胰岛素+葡萄糖促进K+入细胞；④呋塞米促进肾排钾；⑤离子交换树脂促进肠道排钾。口服补钾会加重高钾血症。",
+ src:"——高钾血症紧急处理章节"},
+
+{ch:"液体治疗与电解质",type:"single",q:"代谢性酸中毒的首选纠正药物是？",
+ opts:["乳酸钠","碳酸氢钠","氯化钾","氯化钙"],ans:[1],
+ exp:"碳酸氢钠直接提供HCO3-中和H+，是纠正代谢性酸中毒的首选药物。一般先补充计算量的一半，再根据血气分析调整。",
+ src:"——酸碱平衡紊乱治疗章节"},
+
+{ch:"液体治疗与电解质",type:"single",q:"大量输注0.9%氯化钠可能导致？",
+ opts:["低氯性碱中毒","高氯性酸中毒","呼吸性碱中毒","呼吸性酸中毒"],ans:[1],
+ exp:"0.9%NaCl中Cl-浓度(154mmol/L)高于血浆(98-106mmol/L)，大量输注可导致高氯血症，使血浆中强离子差降低，引起高氯性代谢性酸中毒。",
+ src:"——液体治疗并发症章节"},
+
+{ch:"液体治疗与电解质",type:"single",q:"严重低钠血症的纠正速度不应超过？",
+ opts:["每小时1mmol/L","每小时2mmol/L","24小时内8-10mmol/L","24小时内20mmol/L"],ans:[2],
+ exp:"严重低钠血症纠正过快可导致渗透性脱髓鞘综合征（中央脑桥髓鞘溶解症），24小时内血钠升高不应超过8-10mmol/L。",
+ src:"——低钠血症治疗章节"},
+
+{ch:"液体治疗与电解质",type:"multi",q:"术后补液的原则包括哪些？",
+ opts:["量出为入","先晶后胶","先快后慢","只补充胶体液","注意电解质平衡","尽量多补液"],ans:[0,1,2,4],
+ exp:"术后补液原则：量出为入（根据丢失量补充）、先晶后胶（先恢复细胞外液容量）、先快后慢（纠正休克后减速）、注意电解质平衡。不应只补胶体液或盲目多补液。",
+ src:"——术后液体管理章节"},
+
+// ===== 外科营养支持 =====
+{ch:"外科营养支持",type:"single",q:"肠内营养的首选给药途径是？",
+ opts:["经外周静脉","经中心静脉","经鼻胃管或口服","经空肠造口"],ans:[2],
+ exp:"当胃肠道功能允许时，肠内营养首选经口或经鼻胃管给予，操作简便且更符合生理，可维护肠黏膜屏障功能。空肠造口用于不能经胃喂养的情况。",
+ src:"——肠内营养给药途径章节"},
+
+{ch:"外科营养支持",type:"single",q:"全肠外营养(TPN)最严重的代谢并发症是？",
+ opts:["高血糖","低血糖","再喂养综合征","高脂血症"],ans:[2],
+ exp:"再喂养综合征发生于长期营养不良患者突然恢复营养时，可出现严重低磷血症、低钾、低镁及心力衰竭等，甚至危及生命，是TPN最严重的代谢并发症。",
+ src:"——肠外营养并发症章节"},
+
+{ch:"外科营养支持",type:"multi",q:"肠外营养液的组成成分包括？",
+ opts:["氨基酸","脂肪乳","葡萄糖","电解质","维生素","白蛋白"],ans:[0,1,2,3,4],
+ exp:"标准肠外营养液（全合一TNA）由三大营养素（氨基酸、脂肪乳、葡萄糖）加上电解质、维生素和微量元素组成。白蛋白不属于肠外营养的常规组分，不应加入TNA中。",
+ src:"——肠外营养配方组成章节"},
+
+{ch:"外科营养支持",type:"single",q:"危重患者营养支持应遵循的原则是？",
+ opts:["尽早开始大量肠外营养","当肠道有功能时优先选择肠内营养","等患者完全恢复后再开始营养支持","只补充葡萄糖即可"],ans:[1],
+ exp:"\"当肠道有功能时，使用它\"是营养支持的基本原则。肠内营养可维护肠黏膜屏障、减少细菌移位、降低感染风险，优于肠外营养。",
+ src:"——危重患者营养支持策略章节"},
+
+{ch:"外科营养支持",type:"multi",q:"肠内营养的禁忌证包括？",
+ opts:["完全性肠梗阻","消化道活动性出血","严重腹胀","轻度腹泻","胃瘫","短肠综合征"],ans:[0,1,2],
+ exp:"完全性肠梗阻、消化道活动性出血和严重腹胀是肠内营养的禁忌证。轻度腹泻可调整配方和速度继续EN，胃瘫可经幽门后喂养，短肠综合征可部分EN配合PN。",
+ src:"——肠内营养适应证与禁忌证章节"},
+
+{ch:"外科营养支持",type:"single",q:"脂肪乳剂输注速度过快最常见的不良反应是？",
+ opts:["过敏反应","脂肪超载综合征","低血糖","高钠血症"],ans:[1],
+ exp:"脂肪超载综合征表现为高甘油三酯血症、发热、肝脾肿大、凝血异常等，与脂肪乳输注过快超过机体清除能力有关。脂肪乳输注速度应控制在0.1g/(kg·h)以内。",
+ src:"——脂肪乳剂临床应用章节"},
+
+{ch:"外科营养支持",type:"single",q:"谷氨酰胺在外科营养支持中的主要作用是？",
+ opts:["提供热量","维护肠黏膜屏障功能","降低血糖","促进凝血"],ans:[1],
+ exp:"谷氨酰胺是肠上皮细胞和免疫细胞的重要能量来源，可维护肠黏膜完整性，减少细菌移位，并促进免疫功能，是条件必需氨基酸。",
+ src:"——特殊营养素在外科中的应用章节"},
+
+{ch:"外科营养支持",type:"single",q:"肠内营养制剂中，短肽型与整蛋白型相比的特点是？",
+ opts:["口感更好","更易吸收适用于消化功能障碍患者","热量密度更高","价格更便宜"],ans:[1],
+ exp:"短肽型肠内营养制剂蛋白质已预消化为短肽，不需要胰酶充分消化即可吸收，适用于消化功能不全的患者（如短肠综合征、胰腺功能不全等）。",
+ src:"——肠内营养制剂分类章节"},
+
+// ===== 麻醉药物 =====
+{ch:"麻醉药物",type:"single",q:"丙泊酚属于哪类药物？",
+ opts:["吸入麻醉药","静脉全麻药","局部麻醉药","肌松药"],ans:[1],
+ exp:"丙泊酚是目前临床最常用的静脉全身麻醉药，起效迅速、苏醒快且清醒质量高，广泛用于全麻诱导和维持。",
+ src:"——静脉全身麻醉药章节"},
+
+{ch:"麻醉药物",type:"single",q:"琥珀胆碱属于哪类肌松药？",
+ opts:["去极化型肌松药","非去极化型肌松药","中枢性肌松药","局部肌松药"],ans:[0],
+ exp:"琥珀胆碱是唯一临床使用的去极化型肌松药，与ACh受体结合使终板持续去极化而产生肌松，起效最快（30-60秒），适用于快速序贯诱导插管。",
+ src:"——神经肌肉阻滞药分类章节"},
+
+{ch:"麻醉药物",type:"multi",q:"以下哪些属于酰胺类局部麻醉药？",
+ opts:["利多卡因","布比卡因","罗哌卡因","普鲁卡因","丁卡因","甲哌卡因"],ans:[0,1,2,5],
+ exp:"酰胺类局麻药（分子中含酰胺键）包括利多卡因、布比卡因、罗哌卡因、甲哌卡因等，代谢稳定过敏少见。普鲁卡因和丁卡因为酯类局麻药，由血浆胆碱酯酶代谢，过敏反应相对多见。",
+ src:"——局部麻醉药分类章节"},
+
+{ch:"麻醉药物",type:"single",q:"丙泊酚注射痛的处理措施中最常用的是？",
+ opts:["更换注射部位","混合利多卡因","加快输注速度","稀释后使用"],ans:[1],
+ exp:"注射痛是丙泊酚最常见的不良反应，预混或预先注射利多卡因（20-40mg）是最常用且有效的预防措施，也可选择较粗的静脉给药。",
+ src:"——丙泊酚临床应用章节"},
+
+{ch:"麻醉药物",type:"multi",q:"全身麻醉的维持可选用的药物包括？",
+ opts:["七氟烷","丙泊酚","瑞芬太尼","新斯的明","阿托品","地氟烷"],ans:[0,1,2,5],
+ exp:"全麻维持常用吸入麻醉药（七氟烷、地氟烷）或静脉麻醉药（丙泊酚）配合阿片类（瑞芬太尼等）。新斯的明是胆碱酯酶抑制剂用于拮抗肌松，阿托品是抗胆碱药，均非全麻维持药物。",
+ src:"——全身麻醉维持方案章节"},
+
+{ch:"麻醉药物",type:"single",q:"恶性高热与哪种麻醉药物关系最密切？",
+ opts:["丙泊酚","琥珀胆碱","利多卡因","咪达唑仑"],ans:[1],
+ exp:"恶性高热是一种药物诱发的遗传性骨骼肌异常代谢状态，主要由挥发性吸入麻醉药和琥珀胆碱触发，表现为高热、肌强直、酸中毒等，特效治疗药为丹曲林。",
+ src:"——恶性高热与麻醉用药章节"},
+
+{ch:"麻醉药物",type:"single",q:"新斯的明用于拮抗非去极化肌松药时，需同时合用？",
+ opts:["肾上腺素","阿托品","多巴胺","去甲肾上腺素"],ans:[1],
+ exp:"新斯的明抑制胆碱酯酶，使ACh增加拮抗非去极化肌松药，但同时增加的ACh会引起心动过缓等毒蕈碱样副作用，需合用阿托品对抗。",
+ src:"——肌松药拮抗章节"},
+
+{ch:"麻醉药物",type:"multi",q:"局部麻醉药中毒的表现包括？",
+ opts:["口周麻木","耳鸣","惊厥","心律失常","高血糖","瞳孔散大"],ans:[0,1,2,3],
+ exp:"局麻药全身毒性先出现中枢神经系统症状（口周麻木、耳鸣、视觉障碍→惊厥），严重时出现心血管毒性（心律失常、低血压、心搏骤停）。高血糖和瞳孔散大不是局麻药中毒的典型表现。",
+ src:"——局部麻醉药全身毒性反应章节"},
+
+{ch:"麻醉药物",type:"single",q:"舒更葡糖钠的作用是？",
+ opts:["拮抗去极化肌松药","特异性拮抗罗库溴铵等氨基甾体肌松药","增强肌松效果","镇痛"],ans:[1],
+ exp:"舒更葡糖钠是改良γ-环糊精，通过包裹氨基甾体类肌松药（罗库溴铵、维库溴铵）使其失活，实现快速、完全的肌松拮抗，不影响胆碱能系统。",
+ src:"——新型肌松拮抗药章节"},
+
+// ===== 止血与凝血药物 =====
+{ch:"止血与凝血药物",type:"single",q:"氨甲环酸的止血机制是？",
+ opts:["促进凝血因子合成","抑制纤维蛋白溶解","促进血小板聚集","收缩血管"],ans:[1],
+ exp:"氨甲环酸是赖氨酸类似物，竞争性结合纤溶酶原上的赖氨酸结合位点，阻止纤溶酶原转变为纤溶酶，从而抑制纤维蛋白降解，起到止血作用。",
+ src:"——抗纤溶药物章节"},
+
+{ch:"止血与凝血药物",type:"single",q:"维生素K拮抗剂过量出血时，应给予？",
+ opts:["鱼精蛋白","维生素K","氨甲环酸","去氨加压素"],ans:[1],
+ exp:"维生素K拮抗剂（华法林）通过抑制维生素K依赖性凝血因子合成发挥抗凝作用，过量出血时给予维生素K可恢复凝血因子合成。紧急情况可同时给予凝血酶原复合物。",
+ src:"——维生素K拮抗剂逆转章节"},
+
+{ch:"止血与凝血药物",type:"multi",q:"以下哪些属于抗纤溶药物？",
+ opts:["氨甲环酸","氨基己酸","抑肽酶","肝素","华法林","维生素K"],ans:[0,1,2],
+ exp:"抗纤溶药物包括：人工合成的氨甲环酸和氨基己酸（赖氨酸类似物），以及天然蛋白酶抑制剂抑肽酶。肝素和华法林是抗凝药，维生素K是促凝药。",
+ src:"——止血药物分类章节"},
+
+{ch:"止血与凝血药物",type:"single",q:"肝素过量出血时的特效拮抗剂是？",
+ opts:["维生素K","鱼精蛋白","氨甲环酸","凝血酶原复合物"],ans:[1],
+ exp:"鱼精蛋白是强碱性蛋白，与强酸性的肝素通过电荷中和形成稳定复合物使肝素失活。1mg鱼精蛋白可中和约100IU普通肝素。",
+ src:"——肝素拮抗章节"},
+
+{ch:"止血与凝血药物",type:"single",q:"血管加压素(DDAVP)在止血中的作用机制是？",
+ opts:["直接激活凝血级联反应","促进vWF和FⅧ释放","抑制纤溶系统","收缩血管"],ans:[1],
+ exp:"去氨加压素（DDAVP）促进内皮细胞释放von Willebrand因子（vWF）和凝血因子Ⅷ，用于轻型血友病A和1型vWD的止血治疗。",
+ src:"——促凝血药物章节"},
+
+{ch:"止血与凝血药物",type:"single",q:"凝血酶原复合物(PCC)主要含有哪些凝血因子？",
+ opts:["FI, FV, FVIII, FXIII","FII, FVII, FIX, FX","FXI, FXII","仅含FVIII"],ans:[1],
+ exp:"凝血酶原复合物(PCC)含有维生素K依赖性凝血因子FII、FVII、FIX、FX，用于紧急逆转华法林抗凝或这些因子缺乏导致的出血。",
+ src:"——凝血因子制品章节"},
+
+{ch:"止血与凝血药物",type:"multi",q:"弥散性血管内凝血(DIC)的治疗可能用到的药物包括？",
+ opts:["肝素","新鲜冰冻血浆","血小板","纤维蛋白原","氨甲环酸（后期）","阿司匹林"],ans:[0,1,2,3,4],
+ exp:"DIC治疗包括：①针对病因治疗；②替代治疗（FFP补充凝血因子、血小板、纤维蛋白原）；③肝素抗凝（在DIC早期高凝阶段）；④DIC后期纤溶亢进时可谨慎使用氨甲环酸。阿司匹林不用于DIC治疗。",
+ src:"——DIC药物治疗章节"},
+
+// ===== 抗凝与抗栓治疗 =====
+{ch:"抗凝与抗栓治疗",type:"single",q:"低分子肝素与普通肝素相比的主要优势是？",
+ opts:["抗凝效果更强","出血风险更低、不需常规监测","价格更便宜","起效更快"],ans:[1],
+ exp:"低分子肝素生物利用度高、半衰期长、抗凝效果可预测，一般不需常规监测APTT或抗Xa活性（肾功能不全和特殊人群除外），且出血风险和HIT发生率低于普通肝素。",
+ src:"——低分子肝素临床应用章节"},
+
+{ch:"抗凝与抗栓治疗",type:"single",q:"华法林抗凝治疗需要监测的指标是？",
+ opts:["APTT","PT/INR","血小板计数","D-二聚体"],ans:[1],
+ exp:"华法林通过抑制维生素K依赖性凝血因子合成发挥作用，其抗凝效果通过PT/INR监测，一般治疗目标INR为2.0-3.0。",
+ src:"——华法林抗凝监测章节"},
+
+{ch:"抗凝与抗栓治疗",type:"multi",q:"新型口服抗凝药(DOACs)包括？",
+ opts:["达比加群","利伐沙班","阿哌沙班","华法林","肝素","依度沙班"],ans:[0,1,2,5],
+ exp:"DOACs包括直接凝血酶（FIIa）抑制剂达比加群，和直接FXa抑制剂利伐沙班、阿哌沙班、依度沙班。华法林是维生素K拮抗剂，肝素是间接抗凝药，均不属于DOACs。",
+ src:"——新型口服抗凝药分类章节"},
+
+{ch:"抗凝与抗栓治疗",type:"single",q:"深静脉血栓(DVT)预防中，低分子肝素的标准预防剂量给药方式是？",
+ opts:["口服","皮下注射","静脉滴注","肌内注射"],ans:[1],
+ exp:"低分子肝素预防DVT采用皮下注射（通常腹壁皮下），每日1次，操作简便且生物利用度高。不能肌内注射（可致血肿）。",
+ src:"——静脉血栓栓塞症预防章节"},
+
+{ch:"抗凝与抗栓治疗",type:"multi",q:"肝素诱导的血小板减少症(HIT)的特点包括？",
+ opts:["血小板下降>50%","通常发生在用药5-14天","可伴血栓形成","应立即停用肝素","可换用华法林替代","应换用阿加曲班等替代抗凝"],ans:[0,1,2,3,5],
+ exp:"HIT II型是免疫介导的严重并发症：血小板下降>50%，多在用药5-14天发生，可致动静脉血栓（矛盾性血栓），必须立即停用所有肝素，换用阿加曲班或比伐芦定等非肝素类抗凝药。HIT急性期不能直接用华法林替代（可加重血栓）。",
+ src:"——肝素诱导的血小板减少症章节"},
+
+{ch:"抗凝与抗栓治疗",type:"single",q:"阿司匹林抗血小板的主要作用机制是？",
+ opts:["抑制ADP受体","不可逆抑制COX-1","抑制GPIIb/IIIa受体","抑制磷酸二酯酶"],ans:[1],
+ exp:"阿司匹林通过不可逆乙酰化血小板COX-1，抑制TXA2生成，从而抑制血小板聚集。由于血小板无核无法再合成COX，作用持续血小板整个寿命期（7-10天）。",
+ src:"——抗血小板药物章节"},
+
+{ch:"抗凝与抗栓治疗",type:"single",q:"达比加群的特异性拮抗剂是？",
+ opts:["维生素K","鱼精蛋白","依达赛珠单抗","氨甲环酸"],ans:[2],
+ exp:"依达赛珠单抗(Idarucizumab)是达比加群的特异性人源化单抗片段，与达比加群结合力是凝血酶的350倍，可在数分钟内完全逆转达比加群的抗凝效果。",
+ src:"——DOAC拮抗剂章节"},
+
+// ===== 血管活性药物 =====
+{ch:"血管活性药物与休克",type:"single",q:"感染性休克初始液体复苏首选？",
+ opts:["白蛋白","羟乙基淀粉","晶体液","全血"],ans:[2],
+ exp:"感染性休克指南推荐初始液体复苏首选晶体液（如乳酸钠林格液或生理盐水），在1小时内给予至少30ml/kg。羟乙基淀粉因增加肾损伤风险已不推荐用于脓毒症。",
+ src:"——感染性休克液体复苏章节"},
+
+{ch:"血管活性药物与休克",type:"single",q:"感染性休克液体复苏后仍低血压，首选的升压药物是？",
+ opts:["多巴胺","去甲肾上腺素","肾上腺素","多巴酚丁胺"],ans:[1],
+ exp:"去甲肾上腺素是感染性休克的首选升压药，主要通过α1受体激动收缩血管升高血压，同时具有适度的β1正性肌力作用，维持心输出量。",
+ src:"——感染性休克血管活性药物选择章节"},
+
+{ch:"血管活性药物与休克",type:"multi",q:"以下哪些药物具有正性肌力作用？",
+ opts:["多巴酚丁胺","米力农","肾上腺素","去甲肾上腺素","酚妥拉明","左西孟旦"],ans:[0,1,2,5],
+ exp:"多巴酚丁胺（β1激动）、米力农（PDE3抑制剂）、肾上腺素（α+β激动）和左西孟旦（钙增敏剂）均有正性肌力作用。去甲肾上腺素以缩血管为主，正性肌力作用弱。酚妥拉明为α受体拮抗剂，无正性肌力作用。",
+ src:"——正性肌力药物分类章节"},
+
+{ch:"血管活性药物与休克",type:"single",q:"多巴胺小剂量(1-3μg/kg/min)主要激动哪类受体？",
+ opts:["α受体","β1受体","β2受体","多巴胺受体"],ans:[3],
+ exp:"多巴胺的作用具有剂量依赖性：小剂量(1-3μg/kg/min)激动DA受体扩张肾和内脏血管；中剂量(3-10)激动β1受体增强心肌收缩力；大剂量(>10)激动α受体收缩血管。",
+ src:"——多巴胺药理学章节"},
+
+{ch:"血管活性药物与休克",type:"single",q:"硝普钠的主要药理作用是？",
+ opts:["仅扩张动脉","仅扩张静脉","同时扩张动脉和静脉","收缩血管"],ans:[2],
+ exp:"硝普钠释放NO，同时扩张动脉和静脉，降低心脏前后负荷，起效极快（1-2分钟），停药后作用迅速消失，适用于高血压急症。注意长时间使用可致氰化物中毒。",
+ src:"——血管扩张药物章节"},
+
+{ch:"血管活性药物与休克",type:"multi",q:"心源性休克的药物治疗可选用？",
+ opts:["多巴酚丁胺","去甲肾上腺素","主动脉内球囊反搏","米力农","大量补液","酚妥拉明"],ans:[0,1,3],
+ exp:"心源性休克的药物治疗包括：多巴酚丁胺（增强心肌收缩力）、去甲肾上腺素（维持灌注压）、米力农（正性肌力+扩血管）。主动脉内球囊反搏是机械辅助而非药物。大量补液可加重肺水肿，酚妥拉明的降压作用可加重休克。",
+ src:"——心源性休克治疗章节"},
+
+// ===== 消化系统外科用药 =====
+{ch:"消化系统外科用药",type:"single",q:"应激性溃疡预防首选的药物类别是？",
+ opts:["H2受体拮抗剂","质子泵抑制剂","抗酸药","硫糖铝"],ans:[1],
+ exp:"质子泵抑制剂（如奥美拉唑、泮托拉唑）通过不可逆抑制H+/K+-ATPase，是抑酸作用最强的药物，为应激性溃疡预防的首选。",
+ src:"——应激性溃疡预防用药章节"},
+
+{ch:"消化系统外科用药",type:"single",q:"奥美拉唑属于哪类药物？",
+ opts:["H2受体拮抗剂","质子泵抑制剂","胃黏膜保护剂","促胃动力药"],ans:[1],
+ exp:"奥美拉唑是第一个上市的质子泵抑制剂（PPI），通过不可逆结合壁细胞质子泵抑制胃酸分泌，抑酸效果强而持久。",
+ src:"——抑酸药物分类章节"},
+
+{ch:"消化系统外科用药",type:"multi",q:"以下哪些情况需要预防应激性溃疡？",
+ opts:["机械通气超过48小时","严重创伤","凝血功能障碍","普通择期手术","大面积烧伤","脓毒症"],ans:[0,1,2,4,5],
+ exp:"应激性溃疡的高危因素包括：机械通气>48h、严重创伤、凝血障碍、大面积烧伤、脓毒症、颅脑损伤等。普通择期手术一般不需要预防性使用抑酸药。",
+ src:"——应激性溃疡高危因素与预防章节"},
+
+{ch:"消化系统外科用药",type:"single",q:"生长抑素在外科的主要应用不包括？",
+ opts:["消化道出血","急性胰腺炎","肠梗阻辅助治疗","术后镇痛"],ans:[3],
+ exp:"生长抑素（奥曲肽）可抑制胃酸、胰液分泌和内脏血流，用于消化道出血（食管胃底静脉曲张）、急性胰腺炎和术后肠梗阻的辅助治疗。不用于术后镇痛。",
+ src:"——生长抑素类似物临床应用章节"},
+
+{ch:"消化系统外科用药",type:"multi",q:"急性胰腺炎的药物治疗包括？",
+ opts:["生长抑素","质子泵抑制剂","抗菌药物(必要时)","胰酶制剂","乌司他丁","解痉止痛药"],ans:[0,1,2,4,5],
+ exp:"急性胰腺炎药物治疗：生长抑素（抑制胰液分泌）、PPI（预防应激性溃疡）、必要时抗菌药物（感染性坏死）、乌司他丁（蛋白酶抑制剂）、解痉止痛。急性期禁用胰酶制剂（会刺激胰腺分泌）。",
+ src:"——急性胰腺炎药物治疗章节"},
+
+{ch:"消化系统外科用药",type:"single",q:"甲氧氯普胺(胃复安)的止吐机制主要是？",
+ opts:["抗组胺作用","阻断多巴胺D2受体","阻断5-HT3受体","抗胆碱作用"],ans:[1],
+ exp:"甲氧氯普胺是多巴胺D2受体拮抗剂，通过阻断化学感受器触发带（CTZ）的D2受体发挥止吐作用，同时促进胃排空。长期使用可致锥体外系反应。",
+ src:"——促胃动力药与止吐药章节"},
+
+{ch:"消化系统外科用药",type:"single",q:"术后早期炎性肠梗阻的处理首选？",
+ opts:["手术探查","禁食、胃肠减压及生长抑素等保守治疗","大量灌肠","使用促胃动力药"],ans:[1],
+ exp:"术后早期炎性肠梗阻(EPISBO)是腹部手术后由炎性反应引起的肠梗阻，应首选保守治疗（禁食、胃肠减压、生长抑素抑制消化液分泌、营养支持），不宜早期手术探查。",
+ src:"——术后肠梗阻处理章节"},
+
+// ===== 器官移植用药 =====
+{ch:"器官移植用药",type:"single",q:"器官移植后预防排斥反应的基础免疫抑制药物是？",
+ opts:["环磷酰胺","他克莫司","甲氨蝶呤","来氟米特"],ans:[1],
+ exp:"他克莫司是钙调磷酸酶抑制剂（CNI），是目前器官移植后维持免疫抑制治疗的基石药物，抑制T细胞活化和IL-2产生。",
+ src:"——器官移植免疫抑制方案章节"},
+
+{ch:"器官移植用药",type:"single",q:"环孢素A最主要的不良反应是？",
+ opts:["骨髓抑制","肾毒性","肝毒性","肺毒性"],ans:[1],
+ exp:"肾毒性是环孢素A最主要的不良反应，可导致急性肾功能损害（可逆）和慢性肾间质纤维化（不可逆），使用时需监测血药浓度和肾功能。",
+ src:"——钙调磷酸酶抑制剂不良反应章节"},
+
+{ch:"器官移植用药",type:"multi",q:"器官移植常用的免疫抑制方案通常包含以下哪些药物？",
+ opts:["钙调磷酸酶抑制剂","抗代谢药","糖皮质激素","非甾体抗炎药","氨基糖苷类抗生素","mTOR抑制剂"],ans:[0,1,2,5],
+ exp:"经典三联免疫抑制方案为CNI（他克莫司/环孢素）+抗代谢药（MMF/硫唑嘌呤）+糖皮质激素，mTOR抑制剂（西罗莫司）可替代或联合使用。NSAIDs和氨基糖苷类不属于免疫抑制方案。",
+ src:"——移植免疫抑制方案章节"},
+
+{ch:"器官移植用药",type:"single",q:"吗替麦考酚酯(MMF)的作用机制是？",
+ opts:["抑制钙调磷酸酶","抑制次黄嘌呤核苷酸脱氢酶","抑制mTOR","抑制IL-2受体"],ans:[1],
+ exp:"MMF的活性代谢物霉酚酸(MPA)选择性抑制次黄嘌呤核苷酸脱氢酶(IMPDH)，阻断鸟嘌呤核苷酸从头合成途径，选择性抑制淋巴细胞增殖（淋巴细胞高度依赖此途径）。",
+ src:"——抗代谢类免疫抑制剂章节"},
+
+{ch:"器官移植用药",type:"multi",q:"他克莫司使用时需要注意的事项包括？",
+ opts:["需监测血药浓度","避免与CYP3A4抑制剂合用","可能引起高血糖","可能引起高钾血症","与西柚汁无相互作用","可能引起震颤"],ans:[0,1,2,3,5],
+ exp:"他克莫司治疗窗窄需TDM监测，经CYP3A4代谢（CYP3A4抑制剂如酮康唑会显著升高其浓度），不良反应包括高血糖、高钾血症、震颤、肾毒性等。西柚汁含CYP3A4抑制成分，会升高他克莫司血药浓度，应避免同服。",
+ src:"——他克莫司临床应用与监测章节"},
+
+{ch:"器官移植用药",type:"single",q:"巴利昔单抗是一种？",
+ opts:["抗CD3单抗","抗IL-2受体单抗","抗CD20单抗","抗TNF-α单抗"],ans:[1],
+ exp:"巴利昔单抗是嵌合型抗IL-2受体（CD25）单克隆抗体，与活化T细胞表面的IL-2受体α链结合，阻断IL-2介导的T细胞增殖，用于移植诱导治疗。",
+ src:"——移植诱导治疗用药章节"},
+
+{ch:"器官移植用药",type:"single",q:"西罗莫司(雷帕霉素)的作用靶点是？",
+ opts:["钙调磷酸酶","mTOR","IMPDH","IL-2受体"],ans:[1],
+ exp:"西罗莫司结合FKBP12后抑制mTOR（哺乳动物雷帕霉素靶蛋白），阻断IL-2等生长因子介导的信号转导，抑制T/B细胞由G1期进入S期。",
+ src:"——mTOR抑制剂章节"},
+
+// ===== 肿瘤外科化疗药物 =====
+{ch:"肿瘤外科化疗药物",type:"single",q:"顺铂最突出的不良反应是？",
+ opts:["心脏毒性","肾毒性","肺纤维化","出血性膀胱炎"],ans:[1],
+ exp:"肾毒性是顺铂最主要的剂量限制性毒性，可导致急性肾小管坏死，使用时必须充分水化和利尿以预防肾损伤。",
+ src:"——铂类药物不良反应章节"},
+
+{ch:"肿瘤外科化疗药物",type:"single",q:"使用蒽环类药物(如多柔比星)需要特别监测的器官是？",
+ opts:["肾脏","肝脏","心脏","肺"],ans:[2],
+ exp:"蒽环类药物（多柔比星、表柔比星等）的累积剂量依赖性心脏毒性是最严重的不良反应，可致扩张型心肌病和心力衰竭。多柔比星累积剂量不应超过550mg/m²。",
+ src:"——蒽环类药物心脏毒性章节"},
+
+{ch:"肿瘤外科化疗药物",type:"multi",q:"化疗引起的恶心呕吐预防中，高致吐方案应联合使用？",
+ opts:["5-HT3受体拮抗剂","NK-1受体拮抗剂","地塞米松","甲氧氯普胺","奥美拉唑","劳拉西泮"],ans:[0,1,2],
+ exp:"高致吐风险化疗（如顺铂）的止吐方案推荐三联：5-HT3受体拮抗剂（昂丹司琼等）+NK-1受体拮抗剂（阿瑞匹坦）+地塞米松，可获得最佳止吐效果。",
+ src:"——化疗相关恶心呕吐防治章节"},
+
+{ch:"肿瘤外科化疗药物",type:"single",q:"环磷酰胺特有的不良反应是？",
+ opts:["肾毒性","出血性膀胱炎","心脏毒性","耳毒性"],ans:[1],
+ exp:"环磷酰胺的代谢产物丙烯醛对膀胱黏膜有直接毒性，可导致出血性膀胱炎，预防措施包括充分水化和合用美司钠（巯乙磺酸钠）。",
+ src:"——烷化剂不良反应章节"},
+
+{ch:"肿瘤外科化疗药物",type:"multi",q:"以下哪些化疗药物属于铂类？",
+ opts:["顺铂","卡铂","奥沙利铂","紫杉醇","多西他赛","氟尿嘧啶"],ans:[0,1,2],
+ exp:"铂类抗肿瘤药物包括顺铂、卡铂和奥沙利铂，通过与DNA链内/链间交联抑制DNA复制。紫杉醇和多西他赛是紫杉类（抑制微管），氟尿嘧啶是抗代谢药。",
+ src:"——铂类药物分类章节"},
+
+{ch:"肿瘤外科化疗药物",type:"single",q:"化疗后粒细胞减少性发热，经验性抗感染治疗首选？",
+ opts:["万古霉素","头孢吡肟或哌拉西林他唑巴坦","阿奇霉素","甲硝唑"],ans:[1],
+ exp:"粒缺伴发热（FN）需立即经验性使用广谱抗菌药物，首选具有抗铜绿假单胞菌活性的β-内酰胺类单药（头孢吡肟、哌拉西林他唑巴坦或美罗培南），无需常规加用万古霉素。",
+ src:"——粒细胞缺乏伴发热经验性治疗章节"},
+
+{ch:"肿瘤外科化疗药物",type:"multi",q:"使用顺铂时需采取的预防措施包括？",
+ opts:["充分水化","给予止吐药","监测肾功能","监测听力","补充叶酸","给予美司钠"],ans:[0,1,2,3],
+ exp:"顺铂使用需：充分水化利尿预防肾毒性、三联止吐方案预防呕吐（高致吐）、监测肾功能和听力（耳毒性）。补充叶酸是甲氨蝶呤的解毒措施，美司钠用于预防环磷酰胺的膀胱炎。",
+ src:"——顺铂临床应用注意事项章节"},
+
+{ch:"肿瘤外科化疗药物",type:"single",q:"使用异环磷酰胺时需合用美司钠的目的是？",
+ opts:["增强疗效","预防出血性膀胱炎","减轻骨髓抑制","预防心脏毒性"],ans:[1],
+ exp:"异环磷酰胺的代谢产物丙烯醛可损伤膀胱黏膜导致出血性膀胱炎，美司钠（巯乙磺酸钠）在尿液中与丙烯醛结合使其失活，是预防性必用药物。",
+ src:"——烷化剂毒性预防章节"},
+
+// ===== 创伤与烧伤用药 =====
+{ch:"创伤与烧伤用药",type:"single",q:"严重烧伤早期液体复苏最常用的公式是？",
+ opts:["Holliday-Segar公式","Parkland(Baxter)公式","Harris-Benedict公式","Cockcroft-Gault公式"],ans:[1],
+ exp:"Parkland公式：伤后第一个24小时补液量=4ml×体重(kg)×烧伤面积(%TBSA)，其中前8小时输入总量的一半，后16小时输入另一半。首选乳酸钠林格液。",
+ src:"——烧伤液体复苏章节"},
+
+{ch:"创伤与烧伤用药",type:"single",q:"烧伤创面外用磺胺嘧啶银的主要作用是？",
+ opts:["促进创面愈合","预防和治疗创面感染","减轻疼痛","减少瘢痕形成"],ans:[1],
+ exp:"磺胺嘧啶银(SSD)具有广谱抗菌活性，银离子和磺胺嘧啶协同作用，对革兰阳性菌、阴性菌和真菌均有效，是烧伤创面预防和治疗感染的经典外用药。",
+ src:"——烧伤创面用药章节"},
+
+{ch:"创伤与烧伤用药",type:"multi",q:"创伤性休克的液体复苏原则包括？",
+ opts:["快速建立静脉通道","首选晶体液","根据血压和尿量调整","限制性液体复苏(穿透伤)","首选胶体液","只输全血"],ans:[0,1,2,3],
+ exp:"创伤性休克复苏原则：快速建立至少两条大口径静脉通道，首选晶体液（乳酸钠林格液），根据MAP和尿量调整输液速度。对于未控制出血的穿透伤，采用限制性低压复苏策略（维持MAP 50-60mmHg）。",
+ src:"——创伤性休克液体复苏章节"},
+
+{ch:"创伤与烧伤用药",type:"single",q:"破伤风抗毒素(TAT)使用前需要？",
+ opts:["做青霉素皮试","做TAT皮试","直接注射","口服抗过敏药后注射"],ans:[1],
+ exp:"破伤风抗毒素(TAT)为马血清制品，使用前必须做TAT皮试（皮内注射0.1ml稀释液），阳性者需脱敏注射。破伤风免疫球蛋白(TIG)为人源制品，不需皮试。",
+ src:"——破伤风预防用药章节"},
+
+{ch:"创伤与烧伤用药",type:"multi",q:"烧伤患者营养支持的特点包括？",
+ opts:["高热量需求","高蛋白需求","早期肠内营养","补充维生素C和锌","限制水分摄入","低脂饮食"],ans:[0,1,2,3],
+ exp:"烧伤患者处于高代谢状态，需要高热量（基础代谢可增加2倍）、高蛋白（1.5-2g/kg/d）供给，应尽早开始肠内营养，补充维生素C（促进创面愈合）和锌（参与免疫和愈合）。",
+ src:"——烧伤患者营养支持章节"},
+
+{ch:"创伤与烧伤用药",type:"single",q:"成人破伤风免疫球蛋白(TIG)的常用剂量是？",
+ opts:["100 IU","250-500 IU","1500 IU","3000 IU"],ans:[1],
+ exp:"破伤风免疫球蛋白(TIG)成人预防剂量为250 IU肌注，严重污染伤口可增至500 IU，治疗剂量为3000-6000 IU。TIG为人源制品，不需皮试。",
+ src:"——破伤风被动免疫章节"},
+
+// ===== 泌尿外科用药 =====
+{ch:"泌尿外科用药",type:"single",q:"良性前列腺增生首选的药物类别是？",
+ opts:["抗生素","α1受体阻滞剂","β受体激动剂","钙通道阻滞剂"],ans:[1],
+ exp:"α1受体阻滞剂（坦索罗辛、多沙唑嗪等）通过松弛前列腺和膀胱颈平滑肌，减轻排尿梗阻症状，是BPH药物治疗的一线选择。",
+ src:"——良性前列腺增生药物治疗章节"},
+
+{ch:"泌尿外科用药",type:"single",q:"5α-还原酶抑制剂非那雄胺的作用机制是？",
+ opts:["阻断α受体松弛平滑肌","抑制睾酮转化为双氢睾酮","直接缩小前列腺体积","抑制雌激素"],ans:[1],
+ exp:"非那雄胺抑制5α-还原酶II型，阻断睾酮向双氢睾酮(DHT)的转化，减少DHT对前列腺的促增生作用，长期用药可使前列腺体积缩小约20-30%。",
+ src:"——5α-还原酶抑制剂章节"},
+
+{ch:"泌尿外科用药",type:"multi",q:"泌尿系结石的药物治疗中，以下说法正确的是？",
+ opts:["尿酸结石可口服枸橼酸钾碱化尿液","草酸钙结石需限制草酸摄入","感染性结石需抗感染治疗","所有结石都可以药物溶解","充分饮水有助预防结石","胱氨酸结石可碱化尿液"],ans:[0,1,2,4,5],
+ exp:"尿酸结石在pH>6.5时溶解度增加，碱化尿液可溶石；草酸钙结石需限制高草酸食物；感染性结石（鸟粪石）需抗感染；充分饮水是所有结石预防的基础；胱氨酸结石碱化尿液可增加溶解度。并非所有结石都能药物溶解（如大的草酸钙结石）。",
+ src:"——泌尿系结石药物治疗章节"},
+
+{ch:"泌尿外科用药",type:"single",q:"膀胱过度活动症(OAB)的一线药物治疗是？",
+ opts:["α受体阻滞剂","抗胆碱药(如索利那新)","β3受体激动剂","钙通道阻滞剂"],ans:[1],
+ exp:"抗胆碱药（M受体拮抗剂）如索利那新、托特罗定是OAB的一线药物治疗，通过阻断逼尿肌上的M3受体减少不自主收缩。常见不良反应包括口干、便秘、视物模糊。",
+ src:"——膀胱过度活动症药物治疗章节"},
+
+{ch:"泌尿外科用药",type:"single",q:"坦索罗辛属于哪类药物？",
+ opts:["5α-还原酶抑制剂","选择性α1A受体阻滞剂","抗胆碱药","PDE5抑制剂"],ans:[1],
+ exp:"坦索罗辛是高选择性α1A受体阻滞剂，α1A受体主要分布在前列腺和膀胱颈，选择性阻断可减轻排尿症状而较少引起体位性低血压。",
+ src:"——α受体阻滞剂选择性章节"},
+
+// ===== 骨科用药 =====
+{ch:"骨科用药",type:"single",q:"骨质疏松症治疗中最常用的双膦酸盐类药物服用注意事项是？",
+ opts:["餐后服用","清晨空腹用足量水送服，服后30分钟内不卧床","睡前服用","与牛奶同服促进吸收"],ans:[1],
+ exp:"口服双膦酸盐（阿仑膦酸钠等）吸收率极低(约1%)且食物可进一步降低吸收，需清晨空腹用200ml以上白水送服，服后保持直立姿势至少30分钟以防食管刺激。",
+ src:"——骨质疏松症药物治疗章节"},
+
+{ch:"骨科用药",type:"multi",q:"骨科术后预防深静脉血栓的药物包括？",
+ opts:["低分子肝素","利伐沙班","阿司匹林","华法林","氨甲环酸","间歇充气加压"],ans:[0,1,3],
+ exp:"骨科大手术（髋膝关节置换等）术后DVT预防药物包括低分子肝素（首选）、利伐沙班（口服方便）、华法林等。阿司匹林抗血小板作用弱不作为主要预防药物。氨甲环酸是止血药。间歇充气加压是物理预防措施而非药物。",
+ src:"——骨科术后血栓预防章节"},
+
+{ch:"骨科用药",type:"single",q:"痛风急性发作首选的药物是？",
+ opts:["别嘌醇","秋水仙碱或NSAIDs","丙磺舒","非布司他"],ans:[1],
+ exp:"痛风急性发作首选NSAIDs或秋水仙碱控制症状（24h内使用效果最好），糖皮质激素为替代选择。别嘌醇和非布司他是降尿酸药，急性期开始使用可加重发作。",
+ src:"——痛风急性发作治疗章节"},
+
+{ch:"骨科用药",type:"multi",q:"类风湿关节炎的改善病情抗风湿药(DMARDs)包括？",
+ opts:["甲氨蝶呤","来氟米特","柳氮磺吡啶","布洛芬","泼尼松","羟氯喹"],ans:[0,1,2,5],
+ exp:"传统DMARDs包括甲氨蝶呤（首选锚定药）、来氟米特、柳氮磺吡啶、羟氯喹等。布洛芬是NSAIDs只能缓解症状不能改善病情，泼尼松是糖皮质激素属于桥接治疗。",
+ src:"——类风湿关节炎药物治疗章节"},
+
+{ch:"骨科用药",type:"single",q:"地诺单抗(denosumab)治疗骨质疏松的作用机制是？",
+ opts:["抑制破骨细胞的RANKL","促进成骨细胞增殖","补充钙和维生素D","抑制甲状旁腺激素"],ans:[0],
+ exp:"地诺单抗是RANKL的人源化单克隆抗体，与RANKL结合阻止其激活破骨细胞表面的RANK受体，从而抑制破骨细胞分化和骨吸收，增加骨密度。",
+ src:"——骨吸收抑制剂章节"},
+
+// ===== 神经外科用药 =====
+{ch:"神经外科用药",type:"single",q:"降低颅内压最常用的脱水药物是？",
+ opts:["呋塞米","20%甘露醇","地塞米松","白蛋白"],ans:[1],
+ exp:"20%甘露醇是最常用的渗透性脱水剂，通过提高血浆渗透压使脑组织水分向血管内转移，快速降低颅内压。通常250ml快速静滴（15-30分钟）。",
+ src:"——降颅压药物章节"},
+
+{ch:"神经外科用药",type:"single",q:"甘露醇降颅压的机制是？",
+ opts:["抑制脑脊液分泌","渗透性脱水","扩张脑血管","抑制脑代谢"],ans:[1],
+ exp:"甘露醇是高渗性组织脱水剂，分子量大不易通过血脑屏障，在血管内形成高渗透压梯度，使脑组织间隙的水分通过渗透作用进入血管，从而降低颅内压。",
+ src:"——渗透性脱水剂药理学章节"},
+
+{ch:"神经外科用药",type:"multi",q:"外伤性癫痫预防可选用的抗癫痫药物包括？",
+ opts:["苯妥英钠","左乙拉西坦","丙戊酸钠","卡马西平","加巴喷丁","苯巴比妥"],ans:[0,1,2],
+ exp:"外伤性癫痫早期预防常用苯妥英钠或左乙拉西坦（不良反应更少），丙戊酸钠也可使用。一般建议预防7天。超过7天的晚期预防目前证据不支持。",
+ src:"——颅脑创伤后癫痫预防章节"},
+
+{ch:"神经外科用药",type:"single",q:"蛛网膜下腔出血后预防脑血管痉挛首选？",
+ opts:["硝苯地平","尼莫地平","维拉帕米","地尔硫䓬"],ans:[1],
+ exp:"尼莫地平是二氢吡啶类钙通道阻滞剂，具有脑血管选择性，是SAH后预防迟发性脑血管痉挛的唯一循证推荐药物，口服60mg q4h连用21天。",
+ src:"——蛛网膜下腔出血药物治疗章节"},
+
+{ch:"神经外科用药",type:"multi",q:"甘露醇使用的注意事项包括？",
+ opts:["快速静滴(15-30分钟)","需监测肾功能","注意电解质紊乱","心力衰竭患者慎用","可长期大量使用","结晶时需加温溶解后使用"],ans:[0,1,2,3,5],
+ exp:"甘露醇需快速滴注发挥渗透脱水效果，需监测肾功能（大剂量可致肾损伤）和电解质（可致低钠低钾），心力衰竭患者因短时间内扩容可加重心衰需慎用。不宜长期大量使用以防肾损伤和反跳。低温可致结晶，使用前需加温溶解。",
+ src:"——甘露醇临床使用注意章节"},
+
+{ch:"神经外科用药",type:"single",q:"高渗盐水用于降颅压时常用的浓度是？",
+ opts:["0.9%","3%","10%","23.4%"],ans:[1],
+ exp:"3%高渗盐水是临床降颅压最常用的浓度，可通过中心静脉或外周静脉（低浓度时）持续输注，与甘露醇相比肾损伤风险较低。23.4%为极高浓度仅用于紧急抢救。",
+ src:"——高渗盐水降颅压章节"},
+
+// ===== 心胸外科用药 =====
+{ch:"心胸外科用药",type:"single",q:"体外循环术中使用的抗凝药物是？",
+ opts:["华法林","普通肝素","低分子肝素","阿司匹林"],ans:[1],
+ exp:"体外循环(CPB)需要全身肝素化抗凝，使用普通肝素（300-400IU/kg）使ACT>480秒，术后用鱼精蛋白中和。不能用低分子肝素（无法用鱼精蛋白完全中和）。",
+ src:"——体外循环抗凝管理章节"},
+
+{ch:"心胸外科用药",type:"multi",q:"冠状动脉搭桥术后常用的双联抗血小板治疗包括？",
+ opts:["阿司匹林","氯吡格雷","替格瑞洛","华法林","双嘧达莫","西洛他唑"],ans:[0,1],
+ exp:"CABG术后推荐阿司匹林终身使用，联合氯吡格雷（双联抗血小板）使用12个月以降低桥血管闭塞风险。替格瑞洛主要用于PCI术后。华法林是抗凝药非抗血小板药。",
+ src:"——CABG术后抗栓治疗章节"},
+
+{ch:"心胸外科用药",type:"single",q:"心脏术后出现快速心房颤动，首选的控制心室率药物是？",
+ opts:["地高辛","胺碘酮","普罗帕酮","利多卡因"],ans:[1],
+ exp:"胺碘酮兼有控制心室率和转复窦律作用，负性肌力作用小，是心脏术后房颤的首选药物。地高辛起效慢且在儿茶酚胺水平高时效果差。",
+ src:"——心脏术后心律失常处理章节"},
+
+{ch:"心胸外科用药",type:"multi",q:"胸外科术后镇痛常用的方法包括？",
+ opts:["硬膜外镇痛","静脉PCA","肋间神经阻滞","口服NSAIDs","肌注哌替啶","椎旁神经阻滞"],ans:[0,1,2,5],
+ exp:"胸科术后多模式镇痛常用方法：硬膜外镇痛（金标准）、静脉PCA、肋间神经阻滞和椎旁神经阻滞。肌注哌替啶因代谢产物神经毒性和吸收不稳定已不推荐。",
+ src:"——胸外科术后疼痛管理章节"},
+
+{ch:"心胸外科用药",type:"single",q:"鱼精蛋白过量拮抗肝素后可能出现的问题是？",
+ opts:["出血加重","鱼精蛋白本身具有抗凝作用","血栓形成","肝损伤"],ans:[1],
+ exp:"鱼精蛋白过量时（超过需中和的肝素量），其本身可与血小板结合并抑制凝血酶等，表现出弱的抗凝作用，因此不应过量使用。",
+ src:"——肝素拮抗注意事项章节"},
+
+// ===== 糖皮质激素 =====
+{ch:"糖皮质激素在外科中的应用",type:"single",q:"围手术期长期使用糖皮质激素的患者术中需要？",
+ opts:["停用糖皮质激素","补充应激剂量的糖皮质激素","加大抗菌药物剂量","输注免疫球蛋白"],ans:[1],
+ exp:"长期使用糖皮质激素可抑制HPA轴，术中应激时无法产生足够的皮质醇，需补充应激剂量（如氢化可的松100mg iv），否则可能发生肾上腺危象。",
+ src:"——围手术期糖皮质激素管理章节"},
+
+{ch:"糖皮质激素在外科中的应用",type:"multi",q:"长期使用糖皮质激素的不良反应包括？",
+ opts:["骨质疏松","高血糖","消化性溃疡","免疫功能抑制","低血压","向心性肥胖"],ans:[0,1,2,3,5],
+ exp:"长期糖皮质激素不良反应广泛：骨质疏松（抑制成骨促进破骨）、高血糖（促糖异生）、消化性溃疡、免疫抑制（感染风险增加）、向心性肥胖（满月脸水牛背）等。一般引起高血压而非低血压。",
+ src:"——糖皮质激素不良反应章节"},
+
+{ch:"糖皮质激素在外科中的应用",type:"single",q:"脓毒性休克中使用氢化可的松的指征是？",
+ opts:["所有脓毒性休克患者","液体复苏和血管活性药物治疗后仍持续低血压","预防性使用","仅过敏性休克时使用"],ans:[1],
+ exp:"Surviving Sepsis Campaign指南推荐：当充分液体复苏和血管活性药物治疗后仍存在血流动力学不稳定时，可给予氢化可的松200mg/天静脉输注（应激剂量），不作为常规预防使用。",
+ src:"——脓毒性休克辅助治疗章节"},
+
+{ch:"糖皮质激素在外科中的应用",type:"multi",q:"以下哪些情况外科常使用糖皮质激素？",
+ opts:["器官移植抗排斥","脑水肿","过敏性休克","ARDS","术后常规预防感染","肾上腺皮质功能不全"],ans:[0,1,2,3,5],
+ exp:"外科中糖皮质激素用于：器官移植免疫抑制、颅脑肿瘤相关脑水肿（地塞米松）、过敏性休克（辅助治疗）、ARDS（低剂量）、肾上腺皮质功能不全替代治疗等。不应用于术后常规预防感染（反而增加感染风险）。",
+ src:"——糖皮质激素外科适应证章节"},
+
+{ch:"糖皮质激素在外科中的应用",type:"single",q:"泼尼松5mg相当于地塞米松多少mg的抗炎效价？",
+ opts:["0.25mg","0.5mg","0.75mg","1.5mg"],ans:[2],
+ exp:"糖皮质激素等效换算：泼尼松5mg≈甲泼尼龙4mg≈氢化可的松20mg≈地塞米松0.75mg。地塞米松抗炎效价约为泼尼松的7倍，但无盐皮质激素活性。",
+ src:"——糖皮质激素药理学章节"},
+
+// ===== 抗真菌药物 =====
+{ch:"抗真菌药物",type:"single",q:"侵袭性念珠菌感染的一线治疗药物是？",
+ opts:["氟康唑","卡泊芬净","两性霉素B","伊曲康唑"],ans:[1],
+ exp:"棘白菌素类（卡泊芬净）是侵袭性念珠菌病（尤其是危重患者）的一线推荐药物，杀菌作用好、安全性高。氟康唑可用于非危重患者和对氟康唑敏感的菌株。",
+ src:"——侵袭性真菌感染治疗章节"},
+
+{ch:"抗真菌药物",type:"single",q:"两性霉素B最严重的不良反应是？",
+ opts:["肝毒性","肾毒性","心脏毒性","神经毒性"],ans:[1],
+ exp:"肾毒性是两性霉素B最主要的剂量限制性毒性，几乎所有患者都会出现不同程度的肾功能损害。脂质体制剂（两性霉素B脂质体）可显著降低肾毒性。",
+ src:"——多烯类抗真菌药章节"},
+
+{ch:"抗真菌药物",type:"multi",q:"以下哪些属于棘白菌素类抗真菌药？",
+ opts:["卡泊芬净","米卡芬净","阿尼芬净","伏立康唑","氟康唑","泊沙康唑"],ans:[0,1,2],
+ exp:"棘白菌素类包括卡泊芬净、米卡芬净和阿尼芬净，通过抑制β-1,3-D-葡聚糖合成破坏真菌细胞壁。伏立康唑、氟康唑和泊沙康唑均为唑类（抑制麦角甾醇合成）。",
+ src:"——棘白菌素类药物章节"},
+
+{ch:"抗真菌药物",type:"single",q:"伏立康唑主要用于治疗以下哪种真菌感染？",
+ opts:["念珠菌感染","曲霉菌感染","隐球菌感染","毛霉菌感染"],ans:[1],
+ exp:"伏立康唑是侵袭性曲霉病的一线推荐治疗药物，对曲霉菌有强效抗菌活性。需注意CYP2C19基因多态性影响其代谢，建议进行TDM监测。",
+ src:"——唑类抗真菌药物章节"},
+
+// ===== 特殊人群用药 =====
+{ch:"外科特殊人群用药",type:"single",q:"肾功能不全患者使用抗菌药物时，以下哪种无需调整剂量？",
+ opts:["万古霉素","庆大霉素","阿奇霉素","头孢唑林"],ans:[2],
+ exp:"阿奇霉素主要经胆汁排泄（仅约12%经肾排出），肾功能不全时无需调整剂量。万古霉素、庆大霉素、头孢唑林均主要经肾排泄，肾功能不全时需减量或延长给药间隔。",
+ src:"——肾功能不全患者抗菌药物调整章节"},
+
+{ch:"外科特殊人群用药",type:"multi",q:"妊娠期外科手术用药需注意的事项包括？",
+ opts:["避免使用FDA X级药物","优先选择安全性明确的药物","麻醉药物可能影响胎儿","术后镇痛需考虑哺乳安全","所有药物都禁止使用","抗菌药物首选喹诺酮类"],ans:[0,1,2,3],
+ exp:"妊娠期用药需避免致畸药物（X级如华法林、甲氨蝶呤），优先选B/C级安全性明确的药物，麻醉药可透过胎盘，术后哺乳期需考虑药物乳汁分泌。并非所有药物禁用，喹诺酮类因影响胎儿软骨发育不作为首选。",
+ src:"——妊娠期外科用药章节"},
+
+{ch:"外科特殊人群用药",type:"single",q:"老年患者用药时需要特别注意的是？",
+ opts:["一律使用成人剂量","根据肾功能调整药物剂量","尽量使用最大剂量","优先选择新药"],ans:[1],
+ exp:"老年人肾功能随年龄下降（即使血肌酐正常），药物代谢和排泄能力降低，应根据估算的肌酐清除率（CrCl）调整经肾排泄药物的剂量，避免蓄积中毒。",
+ src:"——老年患者药物剂量调整章节"},
+
+{ch:"外科特殊人群用药",type:"multi",q:"肝功能不全患者需慎用或避免的药物包括？",
+ opts:["对乙酰氨基酚(大剂量)","甲硝唑","红霉素酯化物","利福平","阿莫西林","氯霉素"],ans:[0,2,3,5],
+ exp:"大剂量对乙酰氨基酚可致肝损伤（毒性代谢物NAPQI蓄积），红霉素酯化物有明确肝毒性，利福平可致严重肝损伤，氯霉素主要经肝代谢肝病时蓄积。甲硝唑和阿莫西林在中度肝功能不全时一般不需特别调整。",
+ src:"——肝功能不全患者用药章节"},
+
+// ===== 药物相互作用 =====
+{ch:"药物相互作用",type:"single",q:"华法林与以下哪种药物合用会增强抗凝效果？",
+ opts:["维生素K","苯巴比妥","甲硝唑","利福平"],ans:[2],
+ exp:"甲硝唑抑制华法林代谢的CYP2C9酶，使华法林血药浓度升高，增强抗凝效果，合用时需减少华法林剂量并密切监测INR。维生素K拮抗华法林，苯巴比妥和利福平诱导代谢酶减弱华法林效果。",
+ src:"——华法林药物相互作用章节"},
+
+{ch:"药物相互作用",type:"multi",q:"CYP3A4抑制剂与以下哪些药物存在重要的相互作用？",
+ opts:["他克莫司","环孢素","咪达唑仑","华法林","辛伐他汀","地高辛"],ans:[0,1,2,4],
+ exp:"他克莫司、环孢素、咪达唑仑和辛伐他汀均主要经CYP3A4代谢，CYP3A4抑制剂（如酮康唑、克拉霉素）可显著升高其血药浓度。华法林主要经CYP2C9代谢，地高辛主要经P-gp转运而非CYP3A4代谢。",
+ src:"——CYP450酶介导的药物相互作用章节"},
+
+{ch:"药物相互作用",type:"single",q:"氨基糖苷类与以下哪类药物合用会增加肾毒性？",
+ opts:["青霉素类","万古霉素","大环内酯类","头孢菌素类"],ans:[1],
+ exp:"氨基糖苷类和万古霉素均有肾毒性，两者合用可产生协同性肾损伤，使急性肾损伤风险显著增加。联合使用时需密切监测肾功能和血药浓度。",
+ src:"——肾毒性药物联用风险章节"},
+
+{ch:"药物相互作用",type:"single",q:"质子泵抑制剂与氯吡格雷的相互作用中，影响最小的PPI是？",
+ opts:["奥美拉唑","埃索美拉唑","泮托拉唑","兰索拉唑"],ans:[2],
+ exp:"氯吡格雷需经CYP2C19活化为活性代谢物，奥美拉唑和埃索美拉唑是CYP2C19强抑制剂可减弱氯吡格雷抗血小板效果。泮托拉唑对CYP2C19的抑制作用最弱，是合用PPI的首选。",
+ src:"——抗血小板药物相互作用章节"},
+
+// ===== 药物不良反应监测 =====
+{ch:"药物不良反应监测",type:"single",q:"治疗药物监测(TDM)中，万古霉素的谷浓度目标值一般为？",
+ opts:["5-10 μg/ml","10-20 μg/ml","20-30 μg/ml","30-40 μg/ml"],ans:[1],
+ exp:"万古霉素TDM目标谷浓度一般为10-20μg/ml，严重感染（如MRSA肺炎、心内膜炎）推荐15-20μg/ml以保证疗效，>20μg/ml时肾毒性风险显著增加。",
+ src:"——万古霉素TDM章节"},
+
+{ch:"药物不良反应监测",type:"multi",q:"需要进行治疗药物监测(TDM)的常见外科用药包括？",
+ opts:["万古霉素","氨基糖苷类","他克莫司","环孢素","头孢曲松","阿莫西林"],ans:[0,1,2,3],
+ exp:"需要TDM的药物通常治疗窗窄、个体差异大：万古霉素（谷浓度）、氨基糖苷类（峰/谷浓度）、他克莫司和环孢素（免疫抑制剂谷浓度）。头孢曲松和阿莫西林治疗窗宽，一般不需TDM。",
+ src:"——治疗药物监测适应证章节"},
+
+{ch:"药物不良反应监测",type:"single",q:"输注万古霉素过快导致的红人综合征的处理首先应？",
+ opts:["立即停药并抢救","减慢输注速度并给予抗组胺药","加大剂量","更换其他药物"],ans:[1],
+ exp:"红人综合征是万古霉素输注相关的非免疫性组胺释放反应（非过敏），处理首先应减慢输注速度（每剂至少60分钟），并给予苯海拉明等抗组胺药，通常无需停药。",
+ src:"——万古霉素输注反应处理章节"},
+
+{ch:"药物不良反应监测",type:"single",q:"利奈唑胺使用超过2周需特别监测的是？",
+ opts:["肝功能","血小板计数","心电图","血糖"],ans:[1],
+ exp:"利奈唑胺可导致可逆性骨髓抑制，尤其是血小板减少，通常发生在用药2周后。使用超过2周应每周监测全血细胞计数，血小板下降时考虑停药。",
+ src:"——利奈唑胺不良反应监测章节"},
+
+// ===== 输血与血液制品 =====
+{ch:"输血与血液制品",type:"single",q:"大量输血后最常见的代谢异常是？",
+ opts:["高钾血症和低钙血症","低钾血症","高钙血症","代谢性碱中毒"],ans:[0],
+ exp:"库存血中红细胞破坏释放钾离子导致高钾血症；大量含枸橼酸的抗凝血制品输入后枸橼酸与钙结合导致低钙血症。这是大量输血最常见的代谢并发症。",
+ src:"——大量输血并发症章节"},
+
+{ch:"输血与血液制品",type:"multi",q:"输血前需要进行的检查包括？",
+ opts:["ABO血型鉴定","Rh血型鉴定","交叉配血试验","凝血功能检查","血常规","肝功能"],ans:[0,1,2],
+ exp:"输血前必须进行ABO血型鉴定、Rh(D)血型鉴定和交叉配血试验（主侧配血检测供体RBC与受体血清，次侧配血检测受体RBC与供体血清），是预防溶血性输血反应的核心措施。",
+ src:"——输血前检查章节"},
+
+{ch:"输血与血液制品",type:"single",q:"新鲜冰冻血浆(FFP)的主要适应证是？",
+ opts:["单纯贫血","凝血因子缺乏导致的出血","提高白蛋白水平","增加血容量"],ans:[1],
+ exp:"FFP含有全部凝血因子，主要用于凝血因子缺乏导致的出血（如肝病、DIC、大量输血后稀释性凝血病），不应用于单纯扩容或补充白蛋白。",
+ src:"——血液制品适应证章节"},
+
+{ch:"输血与血液制品",type:"single",q:"血小板输注的主要适应证阈值(外科)通常为？",
+ opts:["<100×10⁹/L","<50×10⁹/L","<20×10⁹/L","<10×10⁹/L"],ans:[1],
+ exp:"外科手术患者血小板<50×10⁹/L时有出血风险，是输注血小板的一般阈值。神经外科或眼科手术要求更高（<100×10⁹/L），内科预防性输注阈值通常<10×10⁹/L。",
+ src:"——血小板输注指征章节"},
+
+// ===== 肠外营养配制 =====
+{ch:"肠外营养配制",type:"single",q:"全合一肠外营养液(TNA)中脂肪乳与氨基酸混合时pH值应维持在？",
+ opts:["3-4","5-6","7-8","9-10"],ans:[1],
+ exp:"TNA液中脂肪乳的稳定性受pH影响大，pH过低（<5）会导致脂肪乳破乳，pH应维持在5-6之间。配制时通常先将电解质加入氨基酸或葡萄糖中，最后混合脂肪乳。",
+ src:"——肠外营养液配制章节"},
+
+{ch:"肠外营养配制",type:"multi",q:"以下哪些电解质不能直接加入脂肪乳中？",
+ opts:["钙剂","镁剂","钾的有机盐","钠的有机盐","微量元素","磷酸盐"],ans:[0],
+ exp:"二价阳离子（尤其是钙离子）可中和脂肪乳滴表面的负电荷导致脂肪乳不稳定甚至破乳，钙剂绝不能直接加入脂肪乳中。配制TNA时应先将钙加入氨基酸液中稀释后再混合。",
+ src:"——肠外营养液稳定性章节"}
+];
+
+</script>
+<script>
+var currentUser=localStorage.getItem('quiz_user')||'';
+var roundNum=0,currentQuestions=[],currentIndex=0,answers=[],usedIds=new Set(),answered=false,selectedOpts=new Set();
+
+function showPage(id){
+  ['startPage','quizPage','resultPage','rankPage'].forEach(function(p){document.getElementById(p).style.display='none'});
+  document.getElementById(id).style.display=id==='startPage'?'flex':'block';
+}
+function startQuiz(){
+  if(!currentUser){document.getElementById('userModal').classList.add('show');document.getElementById('usernameInput').focus();return}
+  beginNewRound();
+}
+function confirmUser(){
+  var n=document.getElementById('usernameInput').value.trim();
+  if(!n){alert('请输入昵称');return}
+  currentUser=n;localStorage.setItem('quiz_user',n);
+  document.getElementById('userModal').classList.remove('show');
+  beginNewRound();
+}
+function beginNewRound(){
+  roundNum++;currentQuestions=pickQuestions(15);currentIndex=0;answers=[];answered=false;selectedOpts=new Set();
+  showPage('quizPage');document.getElementById('roundInfo').textContent='第'+roundNum+'组';renderQuestion();
+}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}}
+function pickQuestions(n){
+  var chMap={};QB.forEach(function(q,i){if(!chMap[q.ch])chMap[q.ch]=[];chMap[q.ch].push(i)});
+  var avail={},total=0;
+  Object.keys(chMap).forEach(function(ch){var a=chMap[ch].filter(function(i){return!usedIds.has(i)});if(a.length>0){avail[ch]=a;total+=a.length}});
+  if(total<n){usedIds.clear();Object.keys(chMap).forEach(function(ch){avail[ch]=chMap[ch].slice()});total=QB.length}
+  var sp=[],mp=[];
+  Object.keys(avail).forEach(function(ch){avail[ch].forEach(function(i){if(QB[i].type==='single')sp.push(i);else mp.push(i)})});
+  shuffle(sp);shuffle(mp);
+  var usedCh=new Set();
+  function pick(pool,cnt){
+    var r=[];pool.sort(function(a,b){return(usedCh.has(QB[a].ch)?1:0)-(usedCh.has(QB[b].ch)?1:0)});
+    for(var i=0;i<pool.length&&r.length<cnt;i++){var ch=QB[pool[i]].ch;var cc=r.filter(function(x){return QB[x].ch===ch}).length;if(cc<2){r.push(pool[i]);usedCh.add(ch)}}
+    if(r.length<cnt)for(var i=0;i<pool.length&&r.length<cnt;i++)if(r.indexOf(pool[i])<0)r.push(pool[i]);
+    return r;
+  }
+  var singles=pick(sp,8),multis=pick(mp,7),all=singles.concat(multis);shuffle(all);
+  all.forEach(function(i){usedIds.add(i)});
+  return all.map(function(i){return{idx:i,d:QB[i]}});
+}
+function renderQuestion(){
+  var item=currentQuestions[currentIndex],q=item.d,isM=q.type==='multi';
+  answered=false;selectedOpts=new Set();
+  document.getElementById('qIndex').textContent=(currentIndex+1)+' / 15';
+  document.getElementById('progressFill').style.width=((currentIndex+1)/15*100)+'%';
+  var badge=document.getElementById('qBadge');badge.textContent=isM?'多选题':'单选题';badge.className='q-badge '+(isM?'multi':'single');
+  document.getElementById('qChapter').textContent=q.ch;
+  document.getElementById('qText').textContent=(currentIndex+1)+'. '+q.q;
+  var letters='ABCDEF',ol=document.getElementById('optionsList');ol.innerHTML='';
+  q.opts.forEach(function(opt,i){
+    var li=document.createElement('li');li.className='option-item';
+    li.innerHTML='<span class="option-letter">'+letters[i]+'</span><span>'+opt+'</span>';
+    li.onclick=function(){selectOption(i,li,isM)};ol.appendChild(li);
+  });
+  document.getElementById('btnConfirm').style.display=isM?'block':'none';
+  document.getElementById('btnNext').style.display='none';
+  document.getElementById('colorLegend').style.display='none';
+  document.getElementById('explanation').style.display='none';
+  document.getElementById('questionCard').classList.remove('fade-in');
+  void document.getElementById('questionCard').offsetWidth;
+  document.getElementById('questionCard').classList.add('fade-in');
+}
+function selectOption(idx,li,isM){
+  if(answered)return;
+  if(isM){if(selectedOpts.has(idx)){selectedOpts.delete(idx);li.classList.remove('selected')}else{selectedOpts.add(idx);li.classList.add('selected')}}
+  else{selectedOpts.clear();selectedOpts.add(idx);document.querySelectorAll('.option-item').forEach(function(el){el.classList.remove('selected')});li.classList.add('selected');setTimeout(function(){checkAnswer()},300)}
+}
+function confirmMulti(){if(answered||selectedOpts.size===0){if(selectedOpts.size===0)alert('请至少选择一个选项');return}checkAnswer()}
+function checkAnswer(){
+  answered=true;var item=currentQuestions[currentIndex],q=item.d,correctSet=new Set(q.ans);
+  var items=document.querySelectorAll('.option-item');
+  items.forEach(function(li,i){
+    li.classList.add('disabled');
+    if(correctSet.has(i)&&selectedOpts.has(i))li.classList.add('correct');
+    else if(!correctSet.has(i)&&selectedOpts.has(i))li.classList.add('wrong');
+    else if(correctSet.has(i)&&!selectedOpts.has(i))li.classList.add('missed');
+  });
+  var isCorrect=correctSet.size===selectedOpts.size&&Array.from(correctSet).every(function(c){return selectedOpts.has(c)});
+  var score=0;
+  if(isCorrect)score=1;
+  else if(q.type==='multi'){var wrongSel=Array.from(selectedOpts).some(function(s){return!correctSet.has(s)});if(!wrongSel&&selectedOpts.size>0)score=0.5}
+  answers.push(score);
+  document.getElementById('btnConfirm').style.display='none';
+  document.getElementById('colorLegend').style.display='block';
+  document.getElementById('explanation').style.display='block';
+  document.getElementById('expContent').textContent=q.exp||'';
+  document.getElementById('expSrc').textContent=q.src||'';
+  document.getElementById('btnNext').style.display='block';
+  document.getElementById('btnNext').textContent=currentIndex<14?'下一题 →':'查看成绩';
+}
+function nextQuestion(){if(currentIndex<14){currentIndex++;renderQuestion();window.scrollTo(0,0)}else showResult()}
+function showResult(){
+  var totalScore=Math.round(answers.reduce(function(s,a){return s+a},0)/15*100);
+  var correct=answers.filter(function(a){return a===1}).length;
+  var partial=answers.filter(function(a){return a===0.5}).length;
+  var wrong=15-correct-partial;
+  document.getElementById('scoreNum').textContent=totalScore;
+  var c=document.getElementById('scoreCircle');c.className='score-circle '+(totalScore>=80?'high':totalScore>=60?'mid':'low');
+  document.getElementById('statCorrect').textContent=correct;
+  document.getElementById('statWrong').textContent=wrong+(partial>0?' (半对'+partial+')':'');
+  document.getElementById('statTotal').textContent='15';
+  saveRecord(totalScore,correct);renderHistory();showPage('resultPage');window.scrollTo(0,0);
+}
+function saveRecord(score,correct){
+  var r=JSON.parse(localStorage.getItem('quiz_records')||'[]');
+  r.push({user:currentUser,score:score,correct:correct,total:15,round:roundNum,time:new Date().toLocaleString('zh-CN')});
+  localStorage.setItem('quiz_records',JSON.stringify(r));
+}
+function renderHistory(){
+  var r=JSON.parse(localStorage.getItem('quiz_records')||'[]').filter(function(x){return x.user===currentUser}).reverse();
+  var s=document.getElementById('historySection');
+  if(!r.length){s.innerHTML='';return}
+  var h='<h3>我的答题记录</h3>';
+  r.forEach(function(x){var c=x.score>=80?'#34a853':x.score>=60?'#f9ab00':'#d93025';h+='<div class="history-item"><div><div class="hi-round">第'+x.round+'组</div><div class="hi-time">'+x.time+'</div></div><div class="hi-score" style="color:'+c+'">'+x.score+'分</div></div>'});
+  s.innerHTML=h;
+}
+function nextRound(){beginNewRound()}
+function showRank(){
+  var r=JSON.parse(localStorage.getItem('quiz_records')||'[]'),um={};
+  r.forEach(function(x){if(!um[x.user])um[x.user]={scores:[],tc:0,rn:0};um[x.user].scores.push(x.score);um[x.user].tc+=x.correct;um[x.user].rn++});
+  var ul=Object.keys(um).map(function(n){var d=um[n];return{name:n,avg:Math.round(d.scores.reduce(function(a,b){return a+b},0)/d.scores.length),best:Math.max.apply(null,d.scores),rn:d.rn,tc:d.tc}});
+  ul.sort(function(a,b){return b.avg-a.avg||b.best-a.best});
+  var list=document.getElementById('rankList');
+  if(!ul.length){list.innerHTML='<div style="padding:40px;text-align:center;color:#999">暂无答题记录</div>'}
+  else{list.innerHTML=ul.map(function(u,i){var pc=i===0?'top1':i===1?'top2':i===2?'top3':'normal';return'<div class="rank-item"><span class="rank-pos '+pc+'">'+(i+1)+'</span><span class="rank-name">'+u.name+'</span><div class="rank-detail"><span class="rank-score">'+u.avg+'分</span>最高'+u.best+'分·共'+u.rn+'轮·答对'+u.tc+'题</div></div>'}).join('')}
+  showPage('rankPage');
+}
+function backToStart(){showPage('startPage')}
+function shareQuiz(){
+  var text='外科药学习题大全 - 每组15题，单选+多选，附带解析，快来测试一下吧！';
+  doShare('外科药学习题大全',text);
+}
+function shareResult(){
+  var sc=document.getElementById('scoreNum').textContent;
+  var text='我在【外科药学习题大全】第'+roundNum+'组答题中获得了'+sc+'分，你也来试试！';
+  doShare('外科药学习题大全 - 我得了'+sc+'分',text);
+}
+function doShare(title,text){
+  if(navigator.share){
+    navigator.share({title:title,text:text,url:location.href}).catch(function(){});
+  }else if(/micromessenger/i.test(navigator.userAgent)){
+    alert('点击右上角"..."按钮，选择"发送给朋友"即可分享');
+  }else{
+    var ta=document.createElement('textarea');ta.value=text+'\n'+location.href;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');alert('分享文案已复制到剪贴板，粘贴发送给好友即可')}
+    catch(e){alert('请手动复制链接分享给好友')}
+    document.body.removeChild(ta);
+  }
+}
+document.getElementById('usernameInput').addEventListener('keydown',function(e){if(e.key==='Enter')confirmUser()});
+</script>
+</body>
+</html>
